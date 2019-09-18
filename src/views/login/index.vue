@@ -44,7 +44,12 @@ export default {
         // 登录状态----token
         const data = await login(this.user)
         console.log(data)
-        //
+        // 跳转之前保持登录状态
+        this.$store.commit('setUser', data)
+        // 跳转到home
+        this.$router.push({
+          name: 'home'
+        })
       } catch (err) {
         console.log('登录失败' + err)
       }
