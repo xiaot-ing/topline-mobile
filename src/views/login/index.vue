@@ -36,6 +36,24 @@
 <script>
 import { login } from '@/api/user'
 export default {
+
+  created () {
+    // 配置自定义错误信息
+    const dict = {
+      custom: {
+        mobile: {
+          required: '手机号不能为空',
+          digits: '手机号必须为11位数字'
+        },
+        code: {
+          required: '验证码不能为空',
+          digits: '验证码必须为6位数字'
+        }
+      }
+    }
+    // or use the instance method
+    this.$validator.localize('zh_CN', dict)
+  },
   data () {
     return {
       user: {
