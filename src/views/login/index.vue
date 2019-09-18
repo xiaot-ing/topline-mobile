@@ -21,19 +21,32 @@
    <van-button slot="button" size="small" type="default">发送验证码</van-button>
   </van-field>
   <div class="login-btn">
-      <van-button type="info" class="btn">登录</van-button>
+      <van-button type="info" class="btn" @click="handleLogin">登录</van-button>
   </div>
 </van-cell-group>
   </div>
 </template>
 
 <script>
+import { login } from '@/api/user'
 export default {
   data () {
     return {
       user: {
         mobile: '13911111111',
         code: '246810'
+      }
+    }
+  },
+  methods: {
+    async  handleLogin () {
+      try {
+        // 登录状态----token
+        const data = await login(this.user)
+        console.log(data)
+        //
+      } catch (err) {
+        console.log('登录失败' + err)
       }
     }
   }
