@@ -5,18 +5,24 @@
     />
     <van-cell-group>
   <van-field
+    name="mobile"
+    v-validate="'required|digits:11'"
     v-model="user.mobile"
     label="手机号"
     placeholder="请输入手机号"
     left-icon="contact"
     clearable
+    :error-message="errors.first('mobile')"
   />
   <van-field
+    name="code"
+    v-validate="'required|digits:6'"
     v-model="user.code"
     label="验证码"
     placeholder="请输入验证码"
     left-icon="gem-o"
      clearable
+     :error-message="errors.first('code')"
   >
    <van-button slot="button" size="small" type="default">发送验证码</van-button>
   </van-field>
@@ -65,4 +71,4 @@ export default {
          width:100%;
      }
  }
-</style>>
+</style>>ya
