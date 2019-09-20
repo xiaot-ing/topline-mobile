@@ -2,8 +2,9 @@
   <div>
       <!-- 导航头 -->
     <van-nav-bar
+    fixed
     title="黑马头条"
-    fixed />
+     />
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
     <!-- 标签栏 频道列表 -->
     <van-tabs v-model="activeTabIndex">
@@ -18,10 +19,11 @@
    finished-text="没有更多了"
    @load="onLoad"
     >
+    <!-- 展示文章列表 -->
   <van-cell
-    v-for="item in list"
-    :key="item"
-    :title="item"
+    v-for="item in channel.articles"
+    :key="item.art_id"
+    :title="item.title"
   />
 </van-list>
   </van-tab>
@@ -47,7 +49,8 @@ export default {
       // 存储频道数据
       channels: [],
       // 激活的频道的tab的索引
-      activeTabIndex: 0
+      activeTabIndex: 0,
+      timestamp: Date.now()
     }
   },
   created () {
@@ -78,6 +81,13 @@ export default {
             window.localStorage.setItem('channels', JSON.stringify(this.channels))
           }
         }
+        // 无论用户有没有登录，当if语句执行完以后，频道列表已经加载好了
+        // this.channels === > [{id:1,name:'xx';}]
+        // 我们希望每个channels保存自己的文章列表
+        // 所以：给每一个频道对象添加一个属性  文章列表 articles
+        this.channels.forEach((item) => {
+          item.articles = []
+        })
       } catch (err) {
         console.log(err)
         this.$toast.fail('获取频道列表失败')
@@ -88,7 +98,13 @@ export default {
       // 获取当前频道的ID
       const activeChannel = this.channels[this.activeTabIndex]
       const id = activeChannel.id
-      const data = await getUserArticles({ channelId: id })
+      const data = await getUserArticles({ channelId: id, timestamp: this.timestamp })
+      // 把 文章列表存储到channel的articles属性中
+      // activeChannel.articles = data.articles
+      activeChannel.articles.push(...data.results)
+      //  保存data中的时间戳  pre_timestamp
+      this.timestamp = data.pre_timestamp
+      this.loading = false
       console.log(data)
       // // 异步更新数据
       // setTimeout(() => {
