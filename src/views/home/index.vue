@@ -2,7 +2,8 @@
   <div>
       <!-- 导航头 -->
     <van-nav-bar
-    title="黑马头条" />
+    title="黑马头条"
+    fixed />
     <!-- 标签栏 频道列表 -->
     <van-tabs>
    <van-tab
@@ -57,5 +58,9 @@ export default {
 
 </script>
 
-<style>
+<style lang="less" scoped>
+.van-tabs {
+    margin-bottom:100px;
+    margin-top:92px;
+}
 </style>
