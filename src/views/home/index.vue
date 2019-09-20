@@ -4,6 +4,7 @@
     <van-nav-bar
     title="黑马头条"
     fixed />
+    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
     <!-- 标签栏 频道列表 -->
     <van-tabs>
    <van-tab
@@ -24,7 +25,9 @@
   />
 </van-list>
   </van-tab>
+
 </van-tabs>
+</van-pull-refresh>
   </div>
 </template>
 
@@ -32,12 +35,16 @@
 export default {
   data () {
     return {
+      // list 需要的数据
       list: [],
       loading: false,
-      finished: false
+      finished: false,
+      // 下拉刷新需要的数据
+      isLoading: false
     }
   },
   methods: {
+    // list组件的方法
     onLoad () {
       // 异步更新数据
       setTimeout(() => {
@@ -51,7 +58,15 @@ export default {
         if (this.list.length >= 40) {
           this.finished = true
         }
-      }, 500)
+      }, 1000)
+    },
+    // refresh下拉刷新组件
+    onRefresh () {
+      setTimeout(() => {
+        this.$toast('刷新成功')
+        this.isLoading = false
+        this.count++
+      }, 1000)
     }
   }
 }
