@@ -8,9 +8,9 @@
     <!-- 标签栏 频道列表 -->
     <van-tabs>
    <van-tab
-    v-for="index in 8"
-   :title="'标签 ' + index"
-   :key="index">
+    v-for="channel in channels"
+   :title="channel.name"
+   :key="channel.id">
    <!-- 文章列表----自带上拉加载更多 注意嵌套关系-->
    <van-list
    v-model="loading"
@@ -32,7 +32,9 @@
 </template>
 
 <script>
+import { getUserChannels } from '@/api/channels'
 export default {
+  name: 'Home',
   data () {
     return {
       // list 需要的数据
@@ -40,10 +42,44 @@ export default {
       loading: false,
       finished: false,
       // 下拉刷新需要的数据
-      isLoading: false
+      isLoading: false,
+      // 存储频道数据
+      channels: []
     }
   },
+  created () {
+  // 加载用户的频道数据
+    this.loadChannels()
+  },
   methods: {
+  // 加载频道数据
+    async loadChannels () {
+      try {
+        // 判断用户是否登录
+        // 如果用户登录，调用getUserChannels获取频道数据
+        if (this.$store.state.user) {
+          const data = await getUserChannels()
+          // console.log(data)
+          this.channels = data.channels
+        } else {
+          // 如果用户没有登录
+          // 从本地存储中获取数据
+          // 把获取到的频道数据，存储到本地存储中
+          // 开始本地存储中是没有数据的，我们希望他返回一个空数组
+          this.channels = JSON.parse(window.localStorage.getItem('channels')) || []
+          // 如果本地存储中没有数据，调用getUserChannels获取数据
+          if (this.channels.length === 0) {
+            const data = await getUserChannels()
+            // console.log(data)
+            this.channels = data.channels
+            window.localStorage.setItem('channels', JSON.stringify(this.channels))
+          }
+        }
+      } catch (err) {
+        console.log(err)
+        this.$toast.fail('获取频道列表失败')
+      }
+    },
     // list组件的方法
     onLoad () {
       // 异步更新数据
