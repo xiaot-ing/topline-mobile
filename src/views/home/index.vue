@@ -6,7 +6,7 @@
     fixed />
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
     <!-- 标签栏 频道列表 -->
-    <van-tabs>
+    <van-tabs v-model="activeTabIndex">
    <van-tab
     v-for="channel in channels"
    :title="channel.name"
@@ -33,6 +33,7 @@
 
 <script>
 import { getUserChannels } from '@/api/channels'
+import { getUserArticles } from '@/api/article'
 export default {
   name: 'Home',
   data () {
@@ -44,7 +45,9 @@ export default {
       // 下拉刷新需要的数据
       isLoading: false,
       // 存储频道数据
-      channels: []
+      channels: [],
+      // 激活的频道的tab的索引
+      activeTabIndex: 0
     }
   },
   created () {
@@ -81,20 +84,25 @@ export default {
       }
     },
     // list组件的方法
-    onLoad () {
-      // 异步更新数据
-      setTimeout(() => {
-        for (let i = 0; i < 10; i++) {
-          this.list.push(this.list.length + 1)
-        }
-        // 加载状态结束
-        this.loading = false
+    async onLoad () {
+      // 获取当前频道的ID
+      const activeChannel = this.channels[this.activeTabIndex]
+      const id = activeChannel.id
+      const data = await getUserArticles({ channelId: id })
+      console.log(data)
+      // // 异步更新数据
+      // setTimeout(() => {
+      //   for (let i = 0; i < 10; i++) {
+      //     this.list.push(this.list.length + 1)
+      //   }
+      //   // 加载状态结束
+      //   this.loading = false
 
-        // 数据全部加载完成
-        if (this.list.length >= 40) {
-          this.finished = true
-        }
-      }, 1000)
+      //   // 数据全部加载完成
+      //   if (this.list.length >= 40) {
+      //     this.finished = true
+      //   }
+      // }, 1000)
     },
     // refresh下拉刷新组件
     onRefresh () {
