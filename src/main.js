@@ -8,12 +8,17 @@ import '@/styles/index.less'
 
 import 'amfe-flexible'
 // 表单验证插件
-import VeeValidate, { validator } from 'vee-validate'
+import VeeValidate, {
+  Validator
+} from 'vee-validate'
 // 汉化文件
 import zhCN from 'vee-validate/dist/locale/zh_CN'
+
+
 Vue.use(VeeValidate)
 // 本地化
-validator.localize('zh_CN', zhCN)
+Validator.localize('zh_CN', zhCN)
+
 Vue.use(Vant)
 
 Vue.config.productionTip = false
