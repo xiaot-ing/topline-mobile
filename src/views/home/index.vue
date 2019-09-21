@@ -1,35 +1,34 @@
 <template>
   <div>
-      <!-- 导航头 -->
-    <van-nav-bar
-    fixed
-    title="黑马头条"
-     />
+    <!-- 导航头 -->
+    <van-nav-bar fixed title="黑马头条" />
     <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
-    <!-- 标签栏 频道列表 -->
-    <van-tabs v-model="activeTabIndex">
-   <van-tab
-    v-for="channel in channels"
-   :title="channel.name"
-   :key="channel.id">
-   <!-- 文章列表----自带上拉加载更多 注意嵌套关系-->
-   <van-list
-   v-model="loading"
-   :finished="finished"
-   finished-text="没有更多了"
-   @load="onLoad"
-    >
-    <!-- 展示文章列表 -->
-  <van-cell
-    v-for="item in channel.articles"
-    :key="item.art_id"
-    :title="item.title"
-  />
-</van-list>
-  </van-tab>
-
-</van-tabs>
-</van-pull-refresh>
+      <!-- 标签栏 频道列表 -->
+      <van-tabs v-model="activeTabIndex">
+        <van-tab v-for="channel in channels" :title="channel.name" :key="channel.id">
+          <!-- 文章列表----自带上拉加载更多 注意嵌套关系-->
+          <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
+            <!-- 展示文章列表 -->
+            <van-cell v-for="item in channel.articles" :key="item.art_id" :title="item.title">
+              <div slot="label">
+                <template v-if="item.cover.type">
+                  <van-grid :border="false" :column-num="3">
+                    <van-grid-item v-for="(item,index) in item.cover.images" :key = "index">
+                      <van-image :src="item" />
+                    </van-grid-item>
+                  </van-grid>
+                </template>
+                <p>
+                  <span>{{item.aut_name}}</span>&nbsp;
+                  <span>{{item.comm_count}}</span>&nbsp;
+                  <span>{{item.pubdate}}</span>&nbsp;
+                </p>
+              </div>
+            </van-cell>
+          </van-list>
+        </van-tab>
+      </van-tabs>
+    </van-pull-refresh>
   </div>
 </template>
 
@@ -54,11 +53,11 @@ export default {
     }
   },
   created () {
-  // 加载用户的频道数据
+    // 加载用户的频道数据
     this.loadChannels()
   },
   methods: {
-  // 加载频道数据
+    // 加载频道数据
     async loadChannels () {
       try {
         // 判断用户是否登录
@@ -72,20 +71,24 @@ export default {
           // 从本地存储中获取数据
           // 把获取到的频道数据，存储到本地存储中
           // 开始本地存储中是没有数据的，我们希望他返回一个空数组
-          this.channels = JSON.parse(window.localStorage.getItem('channels')) || []
+          this.channels =
+            JSON.parse(window.localStorage.getItem('channels')) || []
           // 如果本地存储中没有数据，调用getUserChannels获取数据
           if (this.channels.length === 0) {
             const data = await getUserChannels()
             // console.log(data)
             this.channels = data.channels
-            window.localStorage.setItem('channels', JSON.stringify(this.channels))
+            window.localStorage.setItem(
+              'channels',
+              JSON.stringify(this.channels)
+            )
           }
         }
         // 无论用户有没有登录，当if语句执行完以后，频道列表已经加载好了
         // this.channels === > [{id:1,name:'xx';}]
         // 我们希望每个channels保存自己的文章列表
         // 所以：给每一个频道对象添加一个属性  文章列表 articles
-        this.channels.forEach((item) => {
+        this.channels.forEach(item => {
           item.articles = []
         })
       } catch (err) {
@@ -98,7 +101,10 @@ export default {
       // 获取当前频道的ID
       const activeChannel = this.channels[this.activeTabIndex]
       const id = activeChannel.id
-      const data = await getUserArticles({ channelId: id, timestamp: this.timestamp })
+      const data = await getUserArticles({
+        channelId: id,
+        timestamp: this.timestamp
+      })
       // 把 文章列表存储到channel的articles属性中
       // activeChannel.articles = data.articles
       activeChannel.articles.push(...data.results)
@@ -130,12 +136,11 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang="less" scoped>
 .van-tabs {
-    margin-bottom:100px;
-    margin-top:92px;
+  margin-bottom: 100px;
+  margin-top: 92px;
 }
 </style>
