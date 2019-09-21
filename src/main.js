@@ -2,7 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import Vant from 'vant'
+import Vant, { Lazyload } from 'vant'
+// import { Lazyload } from 'vant'
 import 'vant/lib/index.css'
 import '@/styles/index.less'
 
@@ -14,13 +15,13 @@ import VeeValidate, {
 // 汉化文件
 import zhCN from 'vee-validate/dist/locale/zh_CN'
 
-
+// Vue.use(Lazyload)
 Vue.use(VeeValidate)
 // 本地化
 Validator.localize('zh_CN', zhCN)
 
 Vue.use(Vant)
-
+Vue.use(Lazyload)
 Vue.config.productionTip = false
 
 new Vue({

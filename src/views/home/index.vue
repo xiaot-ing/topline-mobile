@@ -14,7 +14,7 @@
                 <template v-if="item.cover.type">
                   <van-grid :border="false" :column-num="3">
                     <van-grid-item v-for="(item,index) in item.cover.images" :key = "index">
-                      <van-image :src="item" />
+                      <van-image :src="item" lazy-load/>
                     </van-grid-item>
                   </van-grid>
                 </template>
@@ -89,7 +89,11 @@ export default {
         // 我们希望每个channels保存自己的文章列表
         // 所以：给每一个频道对象添加一个属性  文章列表 articles
         this.channels.forEach(item => {
-          item.articles = []
+          // item.articles = []
+          // 通过$set动态给对象，增加一个响应式数据
+          this.$set(item, 'articles', [])
+          // 设置每个频道具有自己的事件戳
+          item.timestamp = Date.now()
         })
       } catch (err) {
         console.log(err)
@@ -103,7 +107,7 @@ export default {
       const id = activeChannel.id
       const data = await getUserArticles({
         channelId: id,
-        timestamp: this.timestamp
+        timestamp: activeChannel.timestamp
       })
       // 把 文章列表存储到channel的articles属性中
       // activeChannel.articles = data.articles
@@ -111,7 +115,11 @@ export default {
       //  保存data中的时间戳  pre_timestamp
       this.timestamp = data.pre_timestamp
       this.loading = false
-      console.log(data)
+      // 判断是否加载完所有数据
+      if (data.results.length === 0) {
+        this.finished = true
+      }
+      // console.log(data)
       // // 异步更新数据
       // setTimeout(() => {
       //   for (let i = 0; i < 10; i++) {
