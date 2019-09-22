@@ -21,7 +21,7 @@
                 <p>
                   <span>{{item.aut_name}}</span>&nbsp;
                   <span>{{item.comm_count}}</span>&nbsp;
-                  <span>{{item.pubdate}}</span>&nbsp;
+                  <span>{{item.pubdate | fmtDate}}</span>&nbsp;
                 </p>
               </div>
             </van-cell>
@@ -102,6 +102,8 @@ export default {
     },
     // list组件的方法
     async onLoad () {
+      // 写一行代码，延时800毫秒，在执行后续的代码
+      await this.$sleep(2000)
       // 获取当前频道的ID
       const activeChannel = this.channels[this.activeTabIndex]
       const id = activeChannel.id
