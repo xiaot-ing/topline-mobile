@@ -11,9 +11,9 @@
   closeOnClickOverlay
 >
 <van-cell-group v-show="!isReportShow">
-  <van-cell title="不感兴趣"  icon="location-o" />
+  <van-cell title="不感兴趣"  icon="location-o" @click="handle('dislike')"/>
   <van-cell title="反馈垃圾内容" icon="location-o" is-link @click="isReportShow=true" />
-    <van-cell title="拉黑作者" icon="location-o" />
+    <van-cell title="拉黑作者" icon="location-o" @click="blacklist" />
 </van-cell-group>
 <van-cell-group v-show="isReportShow">
   <van-cell icon="arrow-left" @click="isReportShow=false" />
@@ -25,13 +25,37 @@
 </template>
 
 <script>
+import { dislikeArticle } from '@/api/article'
 export default {
   name: 'MoreAction',
-  props: ['value', currentArticle],
+  props: ['value', 'currentArticle'],
   data () {
     return {
       // 控制反馈内容是否显示
       isReportShow: false
+    }
+  },
+  methods: {
+    // 点击cell的时候执行
+    handle (type) {
+      switch (type) {
+        case 'dislike':
+          break
+      }
+    },
+    async  dislike () {
+      console.log(this.currentArticle)
+      try {
+        const id = this.currentArticle.art_id
+        // 发送请求
+        await dislikeArticle(id)
+        // 提示成功还是失败
+        // 如果成功，告诉home组件，隐藏MoreAction，移除不感兴趣的文章
+        this.$emit('handleSuccess')
+        this.$toast.success('操作成功')
+      } catch (err) {
+        this.$toast.fail('操作失败' + err)
+      }
     }
   }
 }
