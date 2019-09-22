@@ -31,7 +31,10 @@
       </van-tabs>
     </van-pull-refresh>
     <!-- MoreAction -->
-    <more-action></more-action>
+    <!-- v-model="showAction"相当于：
+     @value="showAction"
+   @input="show=$event" -->
+    <more-action v-model="showAction" ></more-action>
   </div>
 </template>
 
@@ -56,7 +59,9 @@ export default {
       channels: [],
       // 激活的频道的tab的索引
       activeTabIndex: 0,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      // 控制Action显示或者隐藏
+      showAction: false
     }
   },
   created () {
