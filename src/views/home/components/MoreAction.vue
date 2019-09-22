@@ -40,6 +40,9 @@ export default {
     handle (type) {
       switch (type) {
         case 'dislike':
+          this.dislike()
+          break
+        case 'bkanklist':
           break
       }
     },
@@ -54,6 +57,20 @@ export default {
         this.$emit('handleSuccess')
         this.$toast.success('操作成功')
       } catch (err) {
+        this.$toast.fail('操作失败' + err)
+      }
+    },
+    // 拉黑作者
+    async blanklist () {
+      try {
+        // 作者的id
+        const id = this.currentArticle.aut_id
+        // 发送请求
+        await blackUserList(id)
+        // 根据成功失败做提示
+        this.$toast.success('操作成功')
+      // 成功，通知home组件隐藏MoreAction，屏蔽作者
+      } catch(err) {
         this.$toast.fail('操作失败' + err)
       }
     }
