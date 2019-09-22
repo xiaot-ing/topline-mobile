@@ -9,7 +9,7 @@
           <!-- 文章列表----自带上拉加载更多 注意嵌套关系-->
           <van-list v-model="loading" :finished="finished" finished-text="没有更多了" @load="onLoad">
             <!-- 展示文章列表 -->
-            <van-cell v-for="item in channel.articles" :key="item.art_id" :title="item.title">
+            <van-cell v-for="item in channel.articles" :key="item.art_id.toString()" :title="item.title">
               <div slot="label">
                 <template v-if="item.cover.type">
                   <van-grid :border="false" :column-num="3">
@@ -179,6 +179,7 @@ export default {
   
 }
   }
+}
 </script>
 
 <style lang="less" scoped>
