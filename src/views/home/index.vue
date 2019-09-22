@@ -22,7 +22,7 @@
                   <span>{{item.aut_name}}</span>&nbsp;
                   <span>{{item.comm_count}}</span>&nbsp;
                   <span>{{item.pubdate | fmtDate}}</span>&nbsp;
-                  <van-icon name="close"  class="close"/>
+                  <van-icon name="close"  class="close" @click="handleActionShow(item)"/>
                 </p>
               </div>
             </van-cell>
@@ -34,7 +34,7 @@
     <!-- v-model="showAction"相当于：
      @value="showAction"
    @input="show=$event" -->
-    <more-action v-model="showAction" ></more-action>
+    <more-action v-model="showAction" :currentArticle="currentArticle"></more-action>
   </div>
 </template>
 
@@ -61,7 +61,9 @@ export default {
       activeTabIndex: 0,
       timestamp: Date.now(),
       // 控制Action显示或者隐藏
-      showAction: false
+      showAction: false,
+      // 点击x按钮的时候，记录当前要操作的文章对象
+      currentArticle: {}
     }
   },
   created () {
@@ -155,6 +157,13 @@ export default {
         this.isLoading = false
         this.count++
       }, 1000)
+    },
+    // 点击x按钮的时候
+    // 1)弹出MoreAction组件
+    //  记录当前要操作的文章
+    handleActionShow (item) {
+      this.showAction = true
+      this.currentArticle = item
     }
   }
 }

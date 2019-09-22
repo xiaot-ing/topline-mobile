@@ -27,7 +27,7 @@
 <script>
 export default {
   name: 'MoreAction',
-  props: ['value'],
+  props: ['value', currentArticle],
   data () {
     return {
       // 控制反馈内容是否显示
