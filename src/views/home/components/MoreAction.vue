@@ -17,15 +17,16 @@
 </van-cell-group>
 <van-cell-group v-show="isReportShow">
   <van-cell icon="arrow-left" @click="isReportShow=false" />
-   <van-cell title="标题夸张" icon="location-o"  />
-    <van-cell title="低俗色情" icon="location-o" />
-    <van-cell title=错别字多 icon="location-o" />
+   <van-cell title="标题夸张" icon="location-o" @click="handle('report',1)" />
+    <van-cell title="低俗色情" icon="location-o" @click="handle('report',2)" />
+    <van-cell title=错别字多 icon="location-o"  @click="handle('report',3)"/>
 </van-cell-group>
 </van-dialog>
 </template>
 
 <script>
-import { dislikeArticle } from '@/api/article'
+import { dislikeArticle, reportArticle } from '@/api/article'
+import { blackUserList } from '@/api/user'
 export default {
   name: 'MoreAction',
   props: ['value', 'currentArticle'],
@@ -37,12 +38,16 @@ export default {
   },
   methods: {
     // 点击cell的时候执行
-    handle (type) {
+    handle (type, reportType) {
       switch (type) {
         case 'dislike':
           this.dislike()
           break
         case 'bkanklist':
+          this.blanklist()
+          break
+        case 'report':
+          this.report(reportType)
           break
       }
     },
@@ -70,8 +75,26 @@ export default {
         // 根据成功失败做提示
         this.$toast.success('操作成功')
       // 成功，通知home组件隐藏MoreAction，屏蔽作者
-      } catch(err) {
+      } catch (err) {
         this.$toast.fail('操作失败' + err)
+      }
+    },
+    // 反馈文章
+    async report (reportType) {
+      try {
+        // 获取文章id
+        const id = this.currentArticle.art_id
+        // 发送请求
+        await reportArticle({
+          id,
+          type: reportType
+        })
+        // 提示成功失败
+        // 隐藏MoreAction
+        this.$emit('input', false)
+        this.$toast.success('操作成功')
+      }catch (err) {
+        this.$toast.fail('操作失败')
       }
     }
   }
