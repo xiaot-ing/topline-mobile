@@ -22,6 +22,7 @@
                   <span>{{item.aut_name}}</span>&nbsp;
                   <span>{{item.comm_count}}</span>&nbsp;
                   <span>{{item.pubdate | fmtDate}}</span>&nbsp;
+                  <van-icon name="close"  class="close"/>
                 </p>
               </div>
             </van-cell>
@@ -29,14 +30,20 @@
         </van-tab>
       </van-tabs>
     </van-pull-refresh>
+    <!-- MoreAction -->
+    <more-action></more-action>
   </div>
 </template>
 
 <script>
 import { getUserChannels } from '@/api/channels'
 import { getUserArticles } from '@/api/article'
+import MoreAction from './components/MoreAction'
 export default {
   name: 'Home',
+  components: {
+    MoreAction
+  },
   data () {
     return {
       // list 需要的数据
@@ -152,5 +159,9 @@ export default {
 .van-tabs {
   margin-bottom: 100px;
   margin-top: 92px;
+}
+.close{
+  float:right;
+  font-size:30px;
 }
 </style>
