@@ -37,7 +37,7 @@ import { dislikeArticle, reportArticle } from '@/api/article'
 import { blackUserList } from '@/api/user'
 
 export default {
-  name: "MoreAction",
+  name: 'MoreAction',
   props: ['value', 'currentArticle'],
   data () {
     return {
