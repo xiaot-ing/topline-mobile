@@ -16,13 +16,14 @@
 
       </div>
       <van-grid class="channel-content" :gutter="10" clickable>
-        <van-grid-item v-for="value in 8" :key="value" text="文字">
-          <span class="text">文字</span>
+        <van-grid-item v-for="item in channels" :key="item.id" >
+          <span class="text">{{item.name}}</span>
+          <!-- 删除按钮 -->
           <van-icon class="close-icon" name="close" />
         </van-grid-item>
       </van-grid>
     </div>
-
+ <!-- 全部频道 -->
     <div class="channel">
       <div class="channel-head">
         <div>
@@ -31,9 +32,9 @@
         </div>
       </div>
       <van-grid class="channel-content" :gutter="10" clickable>
-        <van-grid-item v-for="value in 8" :key="value" text="文字">
+        <van-grid-item v-for="item in allChannels" :key="item.id" >
           <div class="info">
-            <span class="text">文字</span>
+            <span class="text">{{item.name}}</span>
           </div>
         </van-grid-item>
       </van-grid>
@@ -42,13 +43,30 @@
 </template>
 
 <script>
+import { getAllChannels } from '@/api/channels'
 export default {
   name: 'HomeChannel',
-  props: ['value'],
+  props: ['value', 'channels'],
   data () {
     return {
-      showClose: false
+      showClose: false,
+      allChannels: []
     }
+  },
+  created () {
+   // 获取所有频道
+      this.loadAllChannels()
+  },
+  methods:{
+     async loadAllChannels() {
+        try{
+            const data = await getAllChannels()
+           // console.log(data)
+           this.allChannels = data.channels
+        }catch(err) {
+            console.log(err)
+        }
+      }
   }
 }
 </script>
