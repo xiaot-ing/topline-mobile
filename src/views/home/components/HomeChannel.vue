@@ -1,5 +1,5 @@
 <template>
-  <van-popup :value="value" @input="$emit('input',value)" position="bottom" :style="{ height: '90%' }">
+  <van-popup :value="value" @input="$emit('input',$event)" position="bottom" :style="{ height: '90%' }">
     <div class="channel">
       <div class="channel-head">
         <div>
@@ -7,8 +7,13 @@
           <span class="desc">点击进入频道</span>
         </div>
         <div>
-          <van-button type="danger" plain size="mini">编辑</van-button>
+          <van-button type="danger" plain size="mini" v-show="!showClose" @click="showClose=true">编辑</van-button>
+             <div v-show="showClose" class="btn">
+            <span>全部删除</span>&nbsp;
+            <span @click="showClose=false">完成</span>
+          </div>
         </div>
+
       </div>
       <van-grid class="channel-content" :gutter="10" clickable>
         <van-grid-item v-for="value in 8" :key="value" text="文字">
@@ -39,7 +44,12 @@
 <script>
 export default {
   name: 'HomeChannel',
-  props: ['value']
+  props: ['value'],
+  data () {
+    return {
+      showClose: false
+    }
+  }
 }
 </script>
 
