@@ -32,7 +32,7 @@
         </div>
       </div>
       <van-grid class="channel-content" :gutter="10" clickable>
-        <van-grid-item v-for="item in allChannels" :key="item.id" >
+        <van-grid-item v-for="item in  recommendChannels" :key="item.id" >
           <div class="info">
             <span class="text">{{item.name}}</span>
           </div>
@@ -57,7 +57,20 @@ export default {
    // 获取所有频道
       this.loadAllChannels()
   },
-  methods:{
+  computed:{
+      // 获取推荐的频道列表
+      recommendChannels () {
+          // 获取我的频道的所有id
+          // map的作用是遍历数组，根据数组内容返回一个新的数组
+          const ids = this.channels.map((item) => {
+              return item.id
+          })
+          return this.allChannels.filter((item) => {
+               return !ids.includes(item.id)
+          })
+      }
+  },
+    methods:{
      async loadAllChannels() {
         try{
             const data = await getAllChannels()
