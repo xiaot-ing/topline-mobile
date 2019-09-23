@@ -16,8 +16,8 @@
 
       </div>
       <van-grid class="channel-content" :gutter="10" clickable>
-        <van-grid-item v-for="item in channels" :key="item.id" >
-          <span class="text">{{item.name}}</span>
+        <van-grid-item v-for="(item,index) in channels" :key="item.id" >
+          <span class="text" :class="{active:index === activeIndex}">{{item.name}}</span>
           <!-- 删除按钮 -->
           <van-icon class="close-icon" name="close" />
         </van-grid-item>
@@ -46,7 +46,7 @@
 import { getAllChannels } from '@/api/channels'
 export default {
   name: 'HomeChannel',
-  props: ['value', 'channels'],
+  props: ['value', 'channels', 'activeIndex'],
   data () {
     return {
       showClose: false,

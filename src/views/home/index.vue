@@ -58,7 +58,7 @@
     -->
     <more-action @handleSuccess="handleSuccess" :currentArticle="currentArticle" v-model="showAction"></more-action>
     <!-- 频道管理 -->
-    <home-channel v-model="showChannel" :channels="channels" ></home-channel>
+    <home-channel v-model="showChannel" :channels="channels" :activeIndex ="activeTabIndex"></home-channel>
   </div>
 </template>
 
