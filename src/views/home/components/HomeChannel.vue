@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { getAllChannels, deleteUserChannel } from '@/api/channels'
+import { getAllChannels, deleteUserChannel, resetUserChannels } from '@/api/channels'
 export default {
   name: 'HomeChannel',
   props: ['value', 'channels', 'activeIndex'],
@@ -104,8 +104,25 @@ export default {
         }
       }
     },
-    handleSelect (item) {
+    async  handleSelect (item) {
       this.channels.push(item)
+      // 判断用户是否登录
+      // 用户登录发送请求
+      if (this.$store.state.user) {
+        // 发送请求，保存我的频道到服务器
+        //  [{id:1,seq:0}]
+        let channels = [...this.channels]
+        channels = channels.splice(1).map((item, index) => {
+          return {
+            id: item.id,
+            seq: index + 1
+          }
+        })
+        await resetUserChannels(channels)
+      } else {
+        // 用户没有登录，保存到本地存储
+        window.localStorage.setItem('channels', JSON.stringify(this.channels))
+      }
     }
   }
 }
