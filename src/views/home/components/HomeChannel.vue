@@ -82,20 +82,26 @@ export default {
     },
     // 点击我的频道，将当前索引传递给home组件，并隐藏当前组件
     async handleMy (index) {
+      // 如果是推荐，什么也不做
+      if (index === 0) {
+        return
+      }
       // 判断当前是否是编辑模式
       if (!this.showClose) {
         this.$emit('selectMyIndex', index)
       } else {
-        // 如果是推荐，什么也不做
-        if (index === 0) {
-          return
-        }
         // 获取当前点击的频道的id
         const id = this.channels[index].id
         //  仅仅是删除了内存中的数据
         this.channels.splice('index', 1)
-        // 发送请求删除数据
-        await deleteUserChannel(id)
+        // 判断用户 是否登录，用户登录发送请求
+        if (this.$store.state.user) {
+          // 发送请求删除数据
+          await deleteUserChannel(id)
+        } else {
+          // 如果用户没有登录保存到本地存储
+          window.localStorage.setItem('channels', JSON.stringify(this.channels))
+        }
       }
     },
     handleSelect (item) {
