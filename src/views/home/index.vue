@@ -193,6 +193,7 @@ export default {
     },
     //处理频道管理中我的频道的过程
     handleMyIndex(index) {
+      //  
       this.activeTabIndex = index
       // 隐藏HomeChannel
       this.showChannel = false

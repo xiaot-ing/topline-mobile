@@ -19,7 +19,7 @@
         <van-grid-item v-for="(item,index) in channels" :key="item.id" @click="handleMy(index)">
           <span class="text" :class="{active:index === activeIndex}">{{item.name}}</span>
           <!-- 删除按钮 -->
-          <van-icon class="close-icon" name="close" />
+          <van-icon class="close-icon" name="close" v-show="showClose && item.name!=='推荐' " />
         </van-grid-item>
       </van-grid>
     </div>
@@ -54,36 +54,45 @@ export default {
     }
   },
   created () {
-   // 获取所有频道
-      this.loadAllChannels()
+    // 获取所有频道
+    this.loadAllChannels()
   },
-  computed:{
-      // 获取推荐的频道列表
-      recommendChannels () {
-          // 获取我的频道的所有id
-          // map的作用是遍历数组，根据数组内容返回一个新的数组
-          const ids = this.channels.map((item) => {
-              return item.id
-          })
-          return this.allChannels.filter((item) => {
-               return !ids.includes(item.id)
-          })
-      }
+  computed: {
+    // 获取推荐的频道列表
+    recommendChannels () {
+      // 获取我的频道的所有id
+      // map的作用是遍历数组，根据数组内容返回一个新的数组
+      const ids = this.channels.map((item) => {
+        return item.id
+      })
+      return this.allChannels.filter((item) => {
+        return !ids.includes(item.id)
+      })
+    }
   },
-    methods:{
-     async loadAllChannels() {
-        try{
-            const data = await getAllChannels()
-           // console.log(data)
-           this.allChannels = data.channels
-        }catch(err) {
-            console.log(err)
-        }
-      },
-      // 点击我的频道，将当前索引传递给home组件，并隐藏当前组件
-      async handleMy(index) {
-          this.$emit('selectMyIndex',index)
+  methods: {
+    async loadAllChannels () {
+      try {
+        const data = await getAllChannels()
+        // console.log(data)
+        this.allChannels = data.channels
+      } catch (err) {
+        console.log(err)
       }
+    },
+    // 点击我的频道，将当前索引传递给home组件，并隐藏当前组件
+    async handleMy (index) {
+      // 如果是推荐，什么也不做
+      if (index === 0) {
+        return
+      }
+      // 判断当前是否是编辑模式
+      if (!this.showClose) {
+        this.$emit('selectMyIndex', index)
+      } else {
+        this.channels.splice('index', 1)
+      }
+    }
   }
 }
 </script>
