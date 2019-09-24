@@ -32,7 +32,7 @@
         </div>
       </div>
       <van-grid class="channel-content" :gutter="10" clickable>
-        <van-grid-item v-for="item in  recommendChannels" :key="item.id" >
+        <van-grid-item v-for="item in  recommendChannels" :key="item.id" @click="handleSelect(item)">
           <div class="info">
             <span class="text">{{item.name}}</span>
           </div>
@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { getAllChannels } from '@/api/channels'
+import { getAllChannels, deleteUserChannel } from '@/api/channels'
 export default {
   name: 'HomeChannel',
   props: ['value', 'channels', 'activeIndex'],
@@ -82,16 +82,24 @@ export default {
     },
     // 点击我的频道，将当前索引传递给home组件，并隐藏当前组件
     async handleMy (index) {
-      // 如果是推荐，什么也不做
-      if (index === 0) {
-        return
-      }
       // 判断当前是否是编辑模式
       if (!this.showClose) {
         this.$emit('selectMyIndex', index)
       } else {
+        // 如果是推荐，什么也不做
+        if (index === 0) {
+          return
+        }
+        // 获取当前点击的频道的id
+        const id = this.channels[index].id
+        //  仅仅是删除了内存中的数据
         this.channels.splice('index', 1)
+        // 发送请求删除数据
+        await deleteUserChannel(id)
       }
+    },
+    handleSelect (item) {
+      this.channels.push(item)
     }
   }
 }
