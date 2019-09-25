@@ -6,7 +6,7 @@
       title="黑马头条"
     />
     <!-- 下拉刷新 -->
-    <van-pull-refresh v-model="isLoading" @refresh="onRefresh">
+    <van-pull-refresh v-model="isLoading" @refresh="onRefresh" :success-text="successText" success-duration="500">
 
       <!-- 频道列表 -->
       <van-tabs @change="handleChange" v-model="activeTabIndex">
@@ -88,9 +88,9 @@ export default {
       // 控制action显示或者隐藏
       showAction: false,
       // 点击x按钮的时候，记录当前要操作的文章对象
-      currentArticle: {},
-      // 点击按钮，显示频道列表
-      showChannel: false
+      Channel: false,
+      // 加载成功的提示文字
+      successText: ''
     }
   },
   created () {
@@ -163,11 +163,15 @@ export default {
       }
     },
     // 下拉刷新组件的
-    onRefresh () {
-      setTimeout(() => {
-        this.$toast('刷新成功')
-        this.isLoading = false
-      }, 1000)
+    async  onRefresh () {
+      // 当list组件的load事件触发，会把loading设置为true
+      // 获取当前频道的id
+      const activeChannel = this.channels[this.activeTabIndex]
+      const id = activeChannel.id
+      const data = await getUserArticles({ channelId: id, timestamp: Date.now() })
+      activeChannel.artices.unshift(...data.results)
+      this.isLoading = false
+      this.successText = `${data.results.lengen}条数据加载完毕`
     },
     // 点击x按钮的时候
     // 弹出MoreAction组件
@@ -191,9 +195,9 @@ export default {
 
       articles.splice(index, 1)
     },
-    //处理频道管理中我的频道的过程
-    handleMyIndex(index) {
-      //  
+    // 处理频道管理中我的频道的过程
+    handleMyIndex (index) {
+      //
       this.activeTabIndex = index
       // 隐藏HomeChannel
       this.showChannel = false
