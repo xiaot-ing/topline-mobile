@@ -11,15 +11,16 @@
     />
 
     <!-- 智能提示 -->
-    <van-cell-group>
+    <van-cell-group v-show="suggestionList.length">
       <van-cell
+       @click="onSearch(item)"
         v-for="item in suggestionList"
         :key="item"
         :title="item"
         icon="search"/>
     </van-cell-group>
     <!-- 搜索历史 -->
-    <van-cell-group>
+    <van-cell-group v-show="!suggestionList.length">
       <van-cell
         title="历史记录">
          <van-icon
@@ -35,7 +36,9 @@
       </div>
       </van-cell>
         <van-cell
-        title="hello">
+        v-for="item in  histories"
+        :key="item"
+        title="item">
          <van-icon
          slot="right-icon"
          name="close"
@@ -56,12 +59,22 @@ export default {
       value: '',
       suggestionList: '',
       // 控制删除按钮的显示隐藏
-      showClose: false
+      showClose: false,
+      // 历史记录
+      histories: JSON.parse(window.localStorage.getItem('history')) || []
     }
   },
   methods: {
-    onSearch () {
-      console.log('xxx')
+    onSearch (value) {
+      // 搜索文本框按回车，不传值  this.value_
+      // 点击  搜索建议传值  value
+      value = value || this.vulue
+      //  记录历史  重复的历史记录不要添加
+      if (!this.histories.includes(this.value)) {
+        this.histories.push(this.value)
+        // 将所有历史纪录存储到本地存储
+        window.localStorage.setItem('history', JSON.stringify(this.histories))
+      }
     },
     // 搜索建议
     handleSuggestion: _.debounce(async function () {
