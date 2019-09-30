@@ -1,6 +1,6 @@
 <template>
   <div>
-     <!-- 导航头-搜索框 -->
+    <!-- 导航头-搜索框 -->
     <van-search
       placeholder="请输入搜索关键词"
       v-model="value"
@@ -9,7 +9,8 @@
       @search="onSearch"
       @cancel="$router.push('/')"
     />
-    <!-- 搜索提示 -->
+
+    <!-- 智能提示 -->
     <van-cell-group>
       <van-cell
         v-for="item in suggestionList"
@@ -17,16 +18,45 @@
         :title="item"
         icon="search"/>
     </van-cell-group>
+    <!-- 搜索历史 -->
+    <van-cell-group>
+      <van-cell
+        title="历史记录">
+         <van-icon
+         v-show="!showClose"
+         slot="right-icon"
+         name="delete"
+         @click="showClose=true"
+        style="line-height: inherit;"
+      />
+      <div v-show="showClose">
+        <span>全部删除</span> &nbsp;
+        <span @click="showClose=false">完成</span>
+      </div>
+      </van-cell>
+        <van-cell
+        title="hello">
+         <van-icon
+         slot="right-icon"
+         name="close"
+         v-show="showClose"
+        style="line-height: inherit;"
+      />
+      </van-cell>
+    </van-cell-group>
   </div>
 </template>
 
 <script>
 import { getSuggestions } from '@/api/search'
+import _ from 'lodash'
 export default {
   data () {
     return {
       value: '',
-      suggestionList: ''
+      suggestionList: '',
+      // 控制删除按钮的显示隐藏
+      showClose: false
     }
   },
   methods: {
@@ -34,17 +64,19 @@ export default {
       console.log('xxx')
     },
     // 搜索建议
-    async handleSuggestion () {
+    handleSuggestion: _.debounce(async function () {
       try {
         if (this.value.trim() === '') {
+          this.suggestionList = []
           return
         }
-        const data = await getSuggestions(his.value)
+
+        const data = await getSuggestions(this.value)
         this.suggestionList = data.options
       } catch (err) {
         console.log(err)
       }
-    }
+    }, 500)
   }
 }
 </script>
