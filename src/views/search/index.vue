@@ -16,8 +16,9 @@
        @click="onSearch(item)"
         v-for="item in suggestionList"
         :key="item"
-        :title="item"
-        icon="search"/>
+        icon="search">
+       <div slot="title" v-html="highlight(item)"></div>
+      </van-cell>
     </van-cell-group>
     <!-- 搜索历史 -->
     <van-cell-group v-show="!suggestionList.length">
@@ -89,7 +90,12 @@ export default {
       } catch (err) {
         console.log(err)
       }
-    }, 500)
+    }, 500),
+    hightlight (text) {
+      return text.toLocalLowerCase()
+        .split(this.value)
+        .join(`<span style="color:red">${this.value}</span>`)
+    }
   }
 }
 </script>
